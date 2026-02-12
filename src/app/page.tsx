@@ -65,7 +65,7 @@ export default function Home() {
               <span className="font-medium italic instrument">Stockholm&apos;s</span>{" "}
               <span className="font-light">First</span>
               <br />
-              <span className="font-light tracking-tight">Home Hackathon</span>
+              <span className="font-light tracking-tight">{"{ Hackathome }"}</span>
             </h1>
 
             {/* Event Details */}
