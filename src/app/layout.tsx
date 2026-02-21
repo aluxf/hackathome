@@ -20,8 +20,8 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Stockholm's First Home Hackathon | February 28th",
-  description: "Join 24 participants for an 8-hour hackathon in collaboration with spawned.ai. Register now!",
+  title: "Stockholm's First Home Hackathon | March 7th",
+  description: "Join 24 participants for a 10-hour hackathon in collaboration with spawned.ai. Register now!",
 };
 
 export default function RootLayout({
@@ -31,6 +31,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
       >

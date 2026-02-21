@@ -98,16 +98,20 @@ export default function Home() {
                 In partnership with
               </p>
               <div className="flex items-center justify-center gap-8 md:gap-12">
-                <img
-                  src="/spawned-logo.png"
-                  alt="Spawned"
-                  className="h-7 md:h-8 w-auto"
-                />
-                <img
-                  src="/agreo-logo.svg"
-                  alt="Agreo"
-                  className="h-[6.1rem] md:h-[7.2rem] w-auto"
-                />
+                <a href="https://spawned.ai/" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="/spawned-logo.png"
+                    alt="Spawned"
+                    className="h-7 md:h-8 w-auto hover:opacity-80 transition-opacity"
+                  />
+                </a>
+                <a href="https://www.agreo.se/" target="_blank" rel="noopener noreferrer">
+                  <img
+                    src="/agreo-logo.svg"
+                    alt="Agreo"
+                    className="h-[6.1rem] md:h-[7.2rem] w-auto hover:opacity-80 transition-opacity"
+                  />
+                </a>
               </div>
             </div>
           </div>
@@ -167,8 +171,8 @@ export default function Home() {
             <h3 className="text-2xl md:text-3xl font-light mb-10">
               Your <span className="italic instrument">hosts</span>
             </h3>
-            <div className="flex items-center justify-center gap-12 md:gap-20">
-              <a href="#" target="_blank" rel="noopener noreferrer" className="group text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 max-w-2xl mx-auto">
+              <a href="https://www.linkedin.com/in/alexfooladi/" target="_blank" rel="noopener noreferrer" className="group text-center">
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors">
                   <img src="/alex.jpeg" alt="Alex" className="w-full h-full object-cover" />
                 </div>
@@ -176,8 +180,9 @@ export default function Home() {
                   <p className="text-sm font-medium">Alex</p>
                   <svg className="w-2.5 h-2.5 text-white/20 group-hover:text-white/50 transition-colors" viewBox="0 0 20 18" fill="currentColor"><path d="M2.4 0C1.07 0 0 1.07 0 2.4c0 1.33 1.07 2.4 2.4 2.4 1.33 0 2.4-1.07 2.4-2.4C4.8 1.07 3.73 0 2.4 0zM.34 6.14h4.13V18H.34V6.14zM14.77 5.82c-2.28 0-3.63 1.25-4.13 2.1h-.06V6.14H6.72V18h4.13v-5.86c0-1.55.29-3.04 2.2-3.04 1.89 0 1.91 1.76 1.91 3.14V18H19v-6.42c0-3.19-.69-5.76-4.23-5.76z"/></svg>
                 </div>
+                <p className="text-[11px] text-white/40 mt-1">AI Engineer @ Arkyv</p>
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="group text-center">
+              <a href="https://www.linkedin.com/in/jonas-rosengren-2a4908211/" target="_blank" rel="noopener noreferrer" className="group text-center">
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors">
                   <img src="/cohost.jpeg" alt="Jonas" className="w-full h-full object-cover" />
                 </div>
@@ -185,6 +190,21 @@ export default function Home() {
                   <p className="text-sm font-medium">Jonas</p>
                   <svg className="w-2.5 h-2.5 text-white/20 group-hover:text-white/50 transition-colors" viewBox="0 0 20 18" fill="currentColor"><path d="M2.4 0C1.07 0 0 1.07 0 2.4c0 1.33 1.07 2.4 2.4 2.4 1.33 0 2.4-1.07 2.4-2.4C4.8 1.07 3.73 0 2.4 0zM.34 6.14h4.13V18H.34V6.14zM14.77 5.82c-2.28 0-3.63 1.25-4.13 2.1h-.06V6.14H6.72V18h4.13v-5.86c0-1.55.29-3.04 2.2-3.04 1.89 0 1.91 1.76 1.91 3.14V18H19v-6.42c0-3.19-.69-5.76-4.23-5.76z"/></svg>
                 </div>
+                <p className="text-[11px] text-white/40 mt-1">Member of Technical Staff @ Lovable</p>
+              </a>
+              <a href="https://spawned.ai/" target="_blank" rel="noopener noreferrer" className="group text-center">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors flex items-center justify-center">
+                  <img src="/spawned-logo.png" alt="Spawned" className="w-20 md:w-24 ml-[16px]" />
+                </div>
+                <p className="text-sm font-medium">Spawned</p>
+                <p className="text-[11px] text-white/40 mt-1">The easiest way to deploy and manage your software.</p>
+              </a>
+              <a href="https://www.agreo.se/" target="_blank" rel="noopener noreferrer" className="group text-center">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors flex items-center justify-center">
+                  <img src="/agreo-logo.svg" alt="Agreo" className="w-16 md:w-20" />
+                </div>
+                <p className="text-sm font-medium">Agreo</p>
+                <p className="text-[11px] text-white/40 mt-1">Swish for loans. Simple, secure peer-to-peer lending.</p>
               </a>
             </div>
           </div>
