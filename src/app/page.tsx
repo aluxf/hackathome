@@ -130,7 +130,7 @@ export default function Home() {
             <div className="text-center">
               <div className="text-4xl mb-4">🏠</div>
               <h3 className="text-lg font-medium mb-2">In our apartment</h3>
-              <p className="text-white/60 text-sm font-light">An extremely chill setting in Stockholm. 24 builders, good vibes, and plenty of coffee.</p>
+              <p className="text-white/60 text-sm font-light">An extremely chill setting in Stockholm. 24 builders, good vibes, plenty of energy drinks and pizza.</p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">🗳️</div>
