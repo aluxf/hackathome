@@ -50,16 +50,6 @@ export default function Home() {
       <ShaderBackground>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative z-10 text-center max-w-4xl px-4">
-            {/* Badge */}
-            <div
-              className="inline-flex items-center px-3 py-1 rounded-full bg-white/5 backdrop-blur-sm mb-8 relative"
-            >
-              <div className="absolute top-0 left-1 right-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full" />
-              <span className="text-white/90 text-xs font-light relative z-10">
-                ✨ In collaboration with X
-              </span>
-            </div>
-
             {/* Main Heading */}
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white mb-6 leading-tight">
               <span className="font-medium italic instrument">Stockholm&apos;s</span>{" "}
@@ -69,36 +59,137 @@ export default function Home() {
             </h1>
 
             {/* Event Details */}
-            <p className="text-sm md:text-base text-white/70 mb-8 font-light leading-relaxed max-w-md mx-auto">
-              Yes, it&apos;s literally in our apartment. 24 builders, 8 hours, plenty of coffee. February 28th in Stockholm.
+            <p className="text-sm md:text-base text-white mb-8 font-light leading-relaxed max-w-md mx-auto drop-shadow-md">
+              Yes, it&apos;s literally in our apartment. 24 builders, 10 hours. Saturday, March 7th in Stockholm.
             </p>
 
-            {/* CTA Button */}
-            <button
-              className="px-8 py-3 rounded-full bg-white text-black font-normal text-sm transition-all duration-200 hover:bg-white/90 cursor-pointer"
-              onClick={() => {
-                document
-                  .getElementById("register")
-                  ?.scrollIntoView({ behavior: "smooth" });
-              }}
-            >
-              Register Now
-            </button>
+            {/* CTA Buttons */}
+            <div className="flex items-center justify-center gap-4">
+              <button
+                className="px-8 py-3 rounded-full bg-stone-900 text-white font-normal text-sm transition-all duration-200 hover:bg-stone-800 cursor-pointer"
+                onClick={() => {
+                  document
+                    .getElementById("details")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Read More
+              </button>
+              <button
+                className="px-8 py-3 rounded-full bg-white text-black font-normal text-sm transition-all duration-200 hover:bg-white/90 cursor-pointer"
+                onClick={() => {
+                  document
+                    .getElementById("register")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Register Now
+              </button>
+            </div>
 
             {/* Social Proof */}
-            <p className="mt-8 text-white/70 text-xs font-light tracking-wide">
+            <p className="mt-8 text-white/90 text-xs font-light tracking-wide drop-shadow-md">
               Featuring engineers from Lovable, Microsoft, Netlight, Doktor.se and more
             </p>
-          </div>
-        </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-20">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
-            <div className="w-1 h-2 bg-white/50 rounded-full" />
+            {/* Partners */}
+            <div className="mt-12">
+              <p className="text-white/50 text-xl md:text-2xl italic instrument font-medium mb-3">
+                In partnership with
+              </p>
+              <div className="flex items-center justify-center gap-8 md:gap-12">
+                <img
+                  src="/spawned-logo.png"
+                  alt="Spawned"
+                  className="h-7 md:h-8 w-auto"
+                />
+                <img
+                  src="/agreo-logo.svg"
+                  alt="Agreo"
+                  className="h-[6.1rem] md:h-[7.2rem] w-auto"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </ShaderBackground>
+
+      {/* Event Details Section */}
+      <section id="details" className="bg-stone-900 text-white py-24 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-light mb-16 text-center">
+            What to <span className="italic instrument">expect</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+            <div className="text-center">
+              <div className="text-4xl mb-4">🎲</div>
+              <h3 className="text-lg font-medium mb-2">Randomized themes</h3>
+              <p className="text-white/60 text-sm font-light">Each participant submits a theme when registering. On hack day, we randomize and everyone builds around the chosen theme.</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl mb-4">🏠</div>
+              <h3 className="text-lg font-medium mb-2">In our apartment</h3>
+              <p className="text-white/60 text-sm font-light">An extremely chill setting in Stockholm. 24 builders, good vibes, and plenty of coffee.</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl mb-4">🗳️</div>
+              <h3 className="text-lg font-medium mb-2">Community voted</h3>
+              <p className="text-white/60 text-sm font-light">No judges. After demos, everyone votes. The community decides who wins.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-20">
+            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <h3 className="text-sm font-medium text-white/40 uppercase tracking-wider mb-3">Schedule</h3>
+              <ul className="space-y-2 text-sm font-light">
+                <li className="flex justify-between"><span>Doors open</span><span className="text-white/50">09:00</span></li>
+                <li className="flex justify-between"><span>Theme reveal</span><span className="text-white/50">10:00</span></li>
+                <li className="flex justify-between"><span>Lunch</span><span className="text-white/50">13:00</span></li>
+                <li className="flex justify-between"><span>Demos &amp; voting</span><span className="text-white/50">20:00–22:00</span></li>
+                <li className="flex justify-between"><span>Foosball &amp; chill</span><span className="text-white/50">22:00+</span></li>
+              </ul>
+            </div>
+            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+              <h3 className="text-sm font-medium text-white/40 uppercase tracking-wider mb-3">Details</h3>
+              <ul className="space-y-2 text-sm font-light">
+                <li className="flex justify-between"><span>Location</span><span className="text-white/50">Stockholm</span></li>
+                <li className="flex justify-between"><span>Capacity</span><span className="text-white/50">24 builders</span></li>
+                <li className="flex justify-between"><span>Cost</span><span className="text-white/50">Free</span></li>
+                <li className="flex justify-between"><span>Food &amp; drinks</span><span className="text-white/50">Included</span></li>
+                <li className="flex justify-between"><span>Teams</span><span className="text-white/50">Groups of 3</span></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Hosts */}
+          <div className="text-center">
+            <h3 className="text-2xl md:text-3xl font-light mb-10">
+              Your <span className="italic instrument">hosts</span>
+            </h3>
+            <div className="flex items-center justify-center gap-12 md:gap-20">
+              <a href="#" target="_blank" rel="noopener noreferrer" className="group text-center">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors">
+                  <img src="/alex.jpeg" alt="Alex" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex items-center justify-center gap-1.5">
+                  <p className="text-sm font-medium">Alex</p>
+                  <svg className="w-2.5 h-2.5 text-white/20 group-hover:text-white/50 transition-colors" viewBox="0 0 20 18" fill="currentColor"><path d="M2.4 0C1.07 0 0 1.07 0 2.4c0 1.33 1.07 2.4 2.4 2.4 1.33 0 2.4-1.07 2.4-2.4C4.8 1.07 3.73 0 2.4 0zM.34 6.14h4.13V18H.34V6.14zM14.77 5.82c-2.28 0-3.63 1.25-4.13 2.1h-.06V6.14H6.72V18h4.13v-5.86c0-1.55.29-3.04 2.2-3.04 1.89 0 1.91 1.76 1.91 3.14V18H19v-6.42c0-3.19-.69-5.76-4.23-5.76z"/></svg>
+                </div>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="group text-center">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors">
+                  <img src="/cohost.jpeg" alt="Jonas" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex items-center justify-center gap-1.5">
+                  <p className="text-sm font-medium">Jonas</p>
+                  <svg className="w-2.5 h-2.5 text-white/20 group-hover:text-white/50 transition-colors" viewBox="0 0 20 18" fill="currentColor"><path d="M2.4 0C1.07 0 0 1.07 0 2.4c0 1.33 1.07 2.4 2.4 2.4 1.33 0 2.4-1.07 2.4-2.4C4.8 1.07 3.73 0 2.4 0zM.34 6.14h4.13V18H.34V6.14zM14.77 5.82c-2.28 0-3.63 1.25-4.13 2.1h-.06V6.14H6.72V18h4.13v-5.86c0-1.55.29-3.04 2.2-3.04 1.89 0 1.91 1.76 1.91 3.14V18H19v-6.42c0-3.19-.69-5.76-4.23-5.76z"/></svg>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Registration Form Section - Typeform Style */}
       <section
@@ -197,6 +288,7 @@ export default function Home() {
           </AnimatePresence>
         </div>
       </section>
+
     </div>
   );
 }
