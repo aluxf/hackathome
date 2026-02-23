@@ -20,7 +20,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Stockholm's First Home Hackathon | March 7th",
+  title: "Stockholm's First Hackathome | March 7th",
   description: "Join 24 participants for a 10-hour hackathon in collaboration with spawned.ai. Register now!",
 };
 

@@ -1,47 +1,90 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { ShaderBackground } from "@/components/ui/shaders-hero-section";
 import { motion, AnimatePresence } from "framer-motion";
+
+const supabase = createClient(
+  "https://jvvfpqddnxmapxaixmcx.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2dmZwcWRkbnhtYXB4YWl4bWN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzE3MDUsImV4cCI6MjA4NzAwNzcwNX0.wCCvvQiJB--Jr9WXxbpSuBXfb8LfKXT-4bFTghcT3co"
+);
 
 export default function Home() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     linkedin: "",
+    themeSuggestion: "",
     teamName: "",
   });
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (currentStep > 0) {
+      inputRef.current?.focus();
+    }
+  }, [currentStep]);
 
   const steps = [
     { key: "name", label: "What's your name?", placeholder: "Type your full name...", type: "text", required: true },
     { key: "email", label: "What's your email?", placeholder: "name@example.com", type: "email", required: true },
     { key: "linkedin", label: "Share your LinkedIn profile", placeholder: "https://linkedin.com/in/...", type: "url", required: true },
+    { key: "themeSuggestion", label: "Suggest a theme", placeholder: "e.g. AI agents, climate tech, fintech...", type: "text", required: true },
     { key: "teamName", label: "Got a team name?", placeholder: "Optional - leave blank if solo", type: "text", required: false },
   ];
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    setError("");
+    const { error } = await supabase.from("hackathome-waitlist").insert({
+      name: formData.name,
+      email: formData.email,
+      linkedin: formData.linkedin,
+      theme_suggestion: formData.themeSuggestion,
+      team_name: formData.teamName || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      if (error.code === "23505") {
+        setError("This email is already registered!");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+      return;
+    }
+    setSubmitted(true);
+  };
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      setSubmitted(true);
+      handleSubmit();
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const step = steps[currentStep];
-      if (!step.required || formData[step.key as keyof typeof formData]) {
+      if (canProceed()) {
         handleNext();
       }
     }
   };
 
+  const isValidEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const canProceed = () => {
     const step = steps[currentStep];
-    return !step.required || formData[step.key as keyof typeof formData];
+    const value = formData[step.key as keyof typeof formData];
+    if (step.key === "email") return isValidEmail(value);
+    return !step.required || value;
   };
 
   return (
@@ -89,7 +132,7 @@ export default function Home() {
 
             {/* Social Proof */}
             <p className="mt-8 text-white/90 text-xs font-light tracking-wide drop-shadow-md">
-              Featuring engineers from Lovable, Microsoft, Netlight, Doktor.se and more
+              Featuring engineers from Lovable, Microsoft, Strawberry, Vesence and more
             </p>
 
             {/* Partners */}
@@ -105,7 +148,16 @@ export default function Home() {
                     className="h-7 md:h-8 w-auto hover:opacity-80 transition-opacity"
                   />
                 </a>
-                <a href="https://www.agreo.se/" target="_blank" rel="noopener noreferrer">
+                <a href="https://senka.dev" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity -ml-8 mr-4">
+                  <div className="flex items-center gap-2.5">
+                    <svg width="28" height="28" viewBox="0 0 160 160" fill="none">
+                      <path d="M80 8 L144 8 C148 8, 152 12, 152 16 L152 72 C152 76, 148 80, 144 80 L80 80 C80 80, 112 80, 112 56 C112 32, 80 32, 80 8 Z" fill="#d4a574"/>
+                      <path d="M80 80 L16 80 C12 80, 8 84, 8 88 L8 144 C8 148, 12 152, 16 152 L80 152 C80 152, 48 152, 48 128 C48 104, 80 104, 80 80 Z" fill="#d4a574"/>
+                    </svg>
+                    <span className="text-white text-2xl font-semibold tracking-tight">Senka</span>
+                  </div>
+                </a>
+                <a href="https://www.agreo.se/" target="_blank" rel="noopener noreferrer" className="translate-y-1">
                   <img
                     src="/agreo-logo.svg"
                     alt="Agreo"
@@ -116,6 +168,9 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <p className="absolute bottom-6 left-0 right-0 text-center text-white/30 text-xs font-light">
+          Built with <a href="https://senka.dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/50 transition-colors">Senka</a>, deployed on <a href="https://spawned.ai" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/50 transition-colors">Spawned</a>
+        </p>
       </ShaderBackground>
 
       {/* Event Details Section */}
@@ -129,7 +184,7 @@ export default function Home() {
             <div className="text-center">
               <div className="text-4xl mb-4">🎲</div>
               <h3 className="text-lg font-medium mb-2">Randomized themes</h3>
-              <p className="text-white/60 text-sm font-light">Each participant submits a theme when registering. On hack day, we randomize and everyone builds around the chosen theme.</p>
+              <p className="text-white/60 text-sm font-light">Each participant submits a theme when registering. On hack day, we randomize 2-3 themes and everyone builds around the chosen ones.</p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">🏠</div>
@@ -171,7 +226,7 @@ export default function Home() {
             <h3 className="text-2xl md:text-3xl font-light mb-10">
               Your <span className="italic instrument">hosts</span>
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 max-w-2xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-10 max-w-3xl mx-auto">
               <a href="https://www.linkedin.com/in/alexfooladi/" target="_blank" rel="noopener noreferrer" className="group text-center">
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors">
                   <img src="/alex.jpeg" alt="Alex" className="w-full h-full object-cover" />
@@ -205,6 +260,16 @@ export default function Home() {
                 </div>
                 <p className="text-sm font-medium">Agreo</p>
                 <p className="text-[11px] text-white/40 mt-1">Swish for loans. Simple, secure peer-to-peer lending.</p>
+              </a>
+              <a href="https://senka.dev" target="_blank" rel="noopener noreferrer" className="group text-center">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors flex items-center justify-center">
+                  <svg width="48" height="48" viewBox="0 0 160 160" fill="none">
+                    <path d="M80 8 L144 8 C148 8, 152 12, 152 16 L152 72 C152 76, 148 80, 144 80 L80 80 C80 80, 112 80, 112 56 C112 32, 80 32, 80 8 Z" fill="#d4a574"/>
+                    <path d="M80 80 L16 80 C12 80, 8 84, 8 88 L8 144 C8 148, 12 152, 16 152 L80 152 C80 152, 48 152, 48 128 C48 104, 80 104, 80 80 Z" fill="#d4a574"/>
+                  </svg>
+                </div>
+                <p className="text-sm font-medium">Senka</p>
+                <p className="text-[11px] text-white/40 mt-1">AI Coding Workspace for product teams - in your browser.</p>
               </a>
             </div>
           </div>
@@ -266,6 +331,7 @@ export default function Home() {
                     {steps[currentStep].label}
                   </h2>
                   <input
+                    ref={inputRef}
                     type={steps[currentStep].type}
                     placeholder={steps[currentStep].placeholder}
                     value={formData[steps[currentStep].key as keyof typeof formData]}
@@ -281,19 +347,23 @@ export default function Home() {
                 <div className="flex items-center gap-4">
                   <button
                     onClick={handleNext}
-                    disabled={!canProceed()}
+                    disabled={!canProceed() || submitting}
                     className={`px-8 py-3 rounded-full text-sm font-normal transition-all duration-200 ${
-                      canProceed()
+                      canProceed() && !submitting
                         ? "bg-stone-900 text-white hover:bg-stone-800 cursor-pointer"
                         : "bg-stone-200 text-stone-400 cursor-not-allowed"
                     }`}
                   >
-                    {currentStep === steps.length - 1 ? "Submit" : "Continue"}
+                    {submitting ? "Submitting..." : currentStep === steps.length - 1 ? "Submit" : "Continue"}
                   </button>
                   <span className="text-stone-400 text-sm">
                     press <kbd className="px-2 py-1 bg-stone-100 rounded text-xs">Enter ↵</kbd>
                   </span>
                 </div>
+
+                {error && (
+                  <p className="mt-4 text-red-500 text-sm">{error}</p>
+                )}
 
                 {currentStep > 0 && (
                   <button

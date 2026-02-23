@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="48" viewBox="0 0 200 48" fill="none">
+  <!-- S mark -->
+  <svg x="0" y="4" width="40" height="40" viewBox="0 0 160 160">
+    <path d="M80 8 L144 8 C148 8, 152 12, 152 16 L152 72 C152 76, 148 80, 144 80 L80 80 C80 80, 112 80, 112 56 C112 32, 80 32, 80 8 Z" fill="white"/>
+    <path d="M80 80 L16 80 C12 80, 8 84, 8 88 L8 144 C8 148, 12 152, 16 152 L80 152 C80 152, 48 152, 48 128 C48 104, 80 104, 80 80 Z" fill="white"/>
+  </svg>
+  <!-- Text -->
+  <text x="52" y="34" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="600" fill="white" letter-spacing="-0.5">Senka</text>
+</svg>
