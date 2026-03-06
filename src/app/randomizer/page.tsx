@@ -69,6 +69,11 @@ export default function RandomizerPage() {
   const [hasRandomized, setHasRandomized] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
 
+  const [tracks, setTracks] = useState("");
+  const [trackCount, setTrackCount] = useState(2);
+  const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
+  const [trackAnimKey, setTrackAnimKey] = useState(0);
+
   const getParticipantList = useCallback(() => {
     return participants
       .split("\n")
@@ -106,8 +111,25 @@ export default function RandomizerPage() {
     setAnimationKey((k) => k + 1);
   };
 
+  const getTrackList = useCallback(() => {
+    return tracks
+      .split("\n")
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
+  }, [tracks]);
+
+  const randomizeTracks = () => {
+    const allTracks = getTrackList();
+    if (allTracks.length === 0) return;
+    const count = Math.min(trackCount, allTracks.length);
+    const picked = shuffle(allTracks).slice(0, count);
+    setSelectedTracks(picked);
+    setTrackAnimKey((k) => k + 1);
+  };
+
   const participantCount = getParticipantList().length;
   const teamCount = Math.ceil(participantCount / 3);
+  const totalTracks = getTrackList().length;
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900">
@@ -124,6 +146,109 @@ export default function RandomizerPage() {
         </div>
       </header>
 
+      {/* Track Randomizer */}
+      <div className="max-w-6xl mx-auto px-6 pt-12 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-12">
+          <div className="space-y-5">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-light mb-2">
+                Pick <span className="italic instrument">tracks</span>
+              </h2>
+              <p className="text-stone-400 text-sm font-light">
+                One track per line. Choose how many to randomly select.
+              </p>
+            </div>
+
+            <textarea
+              value={tracks}
+              onChange={(e) => setTracks(e.target.value)}
+              placeholder={"AI Agents\nClimate Tech\nFintech\nHealthcare\nEducation"}
+              rows={6}
+              className="w-full bg-white border border-stone-200 rounded-xl px-5 py-4 text-sm font-light text-stone-900 placeholder:text-stone-300 focus:outline-none focus:border-stone-400 resize-none transition-colors font-mono"
+            />
+
+            <div className="flex items-center gap-3">
+              <label className="text-sm text-stone-500 font-light whitespace-nowrap">
+                Pick
+              </label>
+              <input
+                type="number"
+                min={1}
+                max={Math.max(1, totalTracks)}
+                value={trackCount}
+                onChange={(e) => setTrackCount(Math.max(1, parseInt(e.target.value) || 1))}
+                className="w-16 bg-white border border-stone-200 rounded-lg px-3 py-2 text-sm text-center font-mono text-stone-900 focus:outline-none focus:border-stone-400 transition-colors"
+              />
+              <span className="text-sm text-stone-500 font-light">
+                of {totalTracks} track{totalTracks !== 1 && "s"}
+              </span>
+            </div>
+
+            <button
+              onClick={randomizeTracks}
+              disabled={totalTracks === 0}
+              className={`w-full py-3.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
+                totalTracks > 0
+                  ? "bg-stone-900 text-white hover:bg-stone-800 active:scale-[0.98]"
+                  : "bg-stone-200 text-stone-400 cursor-not-allowed"
+              }`}
+            >
+              Randomize Tracks
+            </button>
+          </div>
+
+          <div className="flex items-center">
+            <AnimatePresence mode="wait">
+              {selectedTracks.length === 0 ? (
+                <motion.div
+                  key="empty-tracks"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="w-full flex items-center justify-center min-h-[200px]"
+                >
+                  <p className="text-stone-300 text-sm font-light">
+                    Add tracks and hit randomize
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={trackAnimKey}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="w-full"
+                >
+                  <h3 className="text-stone-400 text-xs font-medium uppercase tracking-widest mb-4">
+                    Selected Track{selectedTracks.length !== 1 && "s"}
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedTracks.map((track, i) => (
+                      <motion.div
+                        key={track}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.1, duration: 0.3 }}
+                        className="bg-white border border-stone-200 rounded-xl px-6 py-4 shadow-sm"
+                      >
+                        <span className="text-xl font-light instrument italic text-stone-800">
+                          {track}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6">
+        <hr className="border-stone-200" />
+      </div>
+
+      {/* Team Randomizer */}
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-12">
           {/* Left Panel - Input */}
