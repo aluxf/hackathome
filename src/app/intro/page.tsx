@@ -279,6 +279,12 @@ function SlideSpawnedCredits() {
         <img src="/spawned-logo.png" alt="Spawned" className="h-12 invert ml-[64px]" />
       </div>
 
+      <div className="bg-white/5 border border-white/10 rounded-xl px-6 py-4 mb-8">
+        <p className="text-lg text-white/40 font-light mb-1">WiFi</p>
+        <p className="text-2xl font-mono text-white">TP-Link_1CA3_5G</p>
+        <p className="text-xl font-mono text-white/60 mt-1">pass: 36701209</p>
+      </div>
+
       <p className="text-xl md:text-2xl text-white/50 font-light mb-6">$20 grant codes (2x):</p>
 
       <div className="flex gap-6 mb-10">
