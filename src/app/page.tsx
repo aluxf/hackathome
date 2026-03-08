@@ -96,7 +96,7 @@ export default function Home() {
                 className="px-8 py-3 rounded-full bg-white text-black font-normal text-sm transition-all duration-200 hover:bg-white/90 cursor-pointer"
                 onClick={() => {
                   document
-                    .getElementById("about")
+                    .getElementById("waitlist")
                     ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
