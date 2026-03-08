@@ -20,8 +20,8 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Stockholm's First Hackathome | March 7th",
-  description: "Join 24 participants for a 10-hour hackathon in collaboration with spawned.ai. Register now!",
+  title: "Hackathome | Hackathons in living rooms",
+  description: "Intimate hackathons hosted in apartments. Small groups, big ideas. Join the waitlist for our next event.",
 };
 
 export default function RootLayout({
