@@ -11,32 +11,35 @@ const supabase = createClient(
 );
 
 export default function Home() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    linkedin: "",
-    themeSuggestion: "",
-    teamName: "",
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", linkedin: "" });
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const hasInteracted = useRef(false);
+
   useEffect(() => {
-    if (currentStep > 0) {
+    if (hasInteracted.current) {
       inputRef.current?.focus();
     }
   }, [currentStep]);
 
   const steps = [
-    { key: "name", label: "What's your name?", placeholder: "Type your full name...", type: "text", required: true },
-    { key: "email", label: "What's your email?", placeholder: "name@example.com", type: "email", required: true },
-    { key: "linkedin", label: "Share your LinkedIn profile", placeholder: "https://linkedin.com/in/...", type: "url", required: true },
-    { key: "themeSuggestion", label: "Suggest a theme", placeholder: "e.g. AI agents, climate tech, fintech...", type: "text", required: true },
-    { key: "teamName", label: "Got a team name?", placeholder: "Optional - leave blank if solo", type: "text", required: false },
+    { key: "name", label: "What's your name?", placeholder: "Type your full name...", type: "text" },
+    { key: "email", label: "What's your email?", placeholder: "name@example.com", type: "email" },
+    { key: "linkedin", label: "Share your LinkedIn profile", placeholder: "https://linkedin.com/in/...", type: "url" },
   ];
+
+  const isValidEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const canProceed = () => {
+    const value = formData[steps[currentStep].key as keyof typeof formData];
+    if (steps[currentStep].key === "email") return isValidEmail(value);
+    return value.trim().length > 0;
+  };
 
   const handleSubmit = async () => {
     setSubmitting(true);
@@ -45,13 +48,11 @@ export default function Home() {
       name: formData.name,
       email: formData.email,
       linkedin: formData.linkedin,
-      theme_suggestion: formData.themeSuggestion,
-      team_name: formData.teamName || null,
     });
     setSubmitting(false);
     if (error) {
       if (error.code === "23505") {
-        setError("This email is already registered!");
+        setError("This email is already on the list!");
       } else {
         setError("Something went wrong. Please try again.");
       }
@@ -61,6 +62,7 @@ export default function Home() {
   };
 
   const handleNext = () => {
+    hasInteracted.current = true;
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -71,100 +73,45 @@ export default function Home() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (canProceed()) {
-        handleNext();
-      }
+      if (canProceed()) handleNext();
     }
-  };
-
-  const isValidEmail = (email: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const canProceed = () => {
-    const step = steps[currentStep];
-    const value = formData[step.key as keyof typeof formData];
-    if (step.key === "email") return isValidEmail(value);
-    return !step.required || value;
   };
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with Shader Background */}
+      {/* Hero Section */}
       <ShaderBackground>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative z-10 text-center max-w-4xl px-4">
-            {/* Main Heading */}
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white mb-6 leading-tight">
-              <span className="font-medium italic instrument">Stockholm&apos;s</span>{" "}
-              <span className="font-light">First</span>
-              <br />
               <span className="font-light tracking-tight">{"{ Hackathome }"}</span>
             </h1>
 
-            {/* Event Details */}
-            <p className="text-sm md:text-base text-white mb-8 font-light leading-relaxed max-w-md mx-auto drop-shadow-md">
-              Yes, it&apos;s literally in our apartment. 24 builders, 10 hours. Saturday, March 7th in Stockholm.
+            <p className="text-sm md:text-base text-white/80 mb-8 font-light leading-relaxed max-w-lg mx-auto drop-shadow-md">
+              Intimate hackathons hosted in living rooms. Small groups, big builds, good vibes.
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex items-center justify-center gap-4">
-              <button
-                className="px-8 py-3 rounded-full bg-stone-900 text-white font-normal text-sm transition-all duration-200 hover:bg-stone-800 cursor-pointer"
-                onClick={() => {
-                  document
-                    .getElementById("details")
-                    ?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                Read More
-              </button>
               <button
                 className="px-8 py-3 rounded-full bg-white text-black font-normal text-sm transition-all duration-200 hover:bg-white/90 cursor-pointer"
                 onClick={() => {
                   document
-                    .getElementById("register")
+                    .getElementById("about")
                     ?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
-                Register Now
+                Join Waitlist
               </button>
-            </div>
-
-            {/* Social Proof */}
-            <p className="mt-8 text-white/90 text-xs font-light tracking-wide drop-shadow-md">
-              Featuring engineers from Lovable, Microsoft, Strawberry, Vesence and more
-            </p>
-
-            {/* Partners */}
-            <div className="mt-12">
-              <p className="text-white/50 text-xl md:text-2xl italic instrument font-medium mb-3">
-                In partnership with
-              </p>
-              <div className="flex items-center justify-center gap-8 md:gap-12">
-                <a href="https://spawned.ai/" target="_blank" rel="noopener noreferrer">
-                  <img
-                    src="/spawned-logo.png"
-                    alt="Spawned"
-                    className="h-7 md:h-8 w-auto hover:opacity-80 transition-opacity"
-                  />
-                </a>
-                <a href="https://senka.dev" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity -ml-8 mr-4">
-                  <div className="flex items-center gap-2.5">
-                    <svg width="28" height="28" viewBox="0 0 160 160" fill="none">
-                      <path d="M80 8 L144 8 C148 8, 152 12, 152 16 L152 72 C152 76, 148 80, 144 80 L80 80 C80 80, 112 80, 112 56 C112 32, 80 32, 80 8 Z" fill="#d4a574"/>
-                      <path d="M80 80 L16 80 C12 80, 8 84, 8 88 L8 144 C8 148, 12 152, 16 152 L80 152 C80 152, 48 152, 48 128 C48 104, 80 104, 80 80 Z" fill="#d4a574"/>
-                    </svg>
-                    <span className="text-white text-2xl font-semibold tracking-tight">Senka</span>
-                  </div>
-                </a>
-                <a href="https://www.agreo.se/" target="_blank" rel="noopener noreferrer" className="translate-y-1">
-                  <img
-                    src="/agreo-logo.svg"
-                    alt="Agreo"
-                    className="h-[6.1rem] md:h-[7.2rem] w-auto hover:opacity-80 transition-opacity"
-                  />
-                </a>
-              </div>
+              <button
+                className="px-8 py-3 rounded-full bg-stone-900 text-white font-normal text-sm transition-all duration-200 hover:bg-stone-800 cursor-pointer"
+                onClick={() => {
+                  document
+                    .getElementById("past-events")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Past Events
+              </button>
             </div>
           </div>
         </div>
@@ -173,113 +120,132 @@ export default function Home() {
         </p>
       </ShaderBackground>
 
-      {/* Event Details Section */}
-      <section id="details" className="bg-stone-900 text-white py-24 px-4">
+      {/* What is Hackathome */}
+      <section id="about" className="bg-stone-900 text-white py-24 px-4">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-light mb-16 text-center">
-            What to <span className="italic instrument">expect</span>
+            What is <span className="italic instrument">Hackathome?</span>
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
             <div className="text-center">
+              <div className="text-4xl mb-4">🏠</div>
+              <h3 className="text-lg font-medium mb-2">In someone&apos;s apartment</h3>
+              <p className="text-white/60 text-sm font-light">
+                No conference halls. No corporate vibes. Just a living room, good WiFi, and builders who ship.
+              </p>
+            </div>
+            <div className="text-center">
               <div className="text-4xl mb-4">🎲</div>
               <h3 className="text-lg font-medium mb-2">Randomized themes</h3>
-              <p className="text-white/60 text-sm font-light">Each participant submits a theme when registering. On hack day, we randomize 2-3 themes and everyone builds around the chosen ones.</p>
+              <p className="text-white/60 text-sm font-light">
+                Participants suggest themes. On hack day, we randomize a few and everyone builds around the chosen ones.
+              </p>
             </div>
             <div className="text-center">
-              <div className="text-4xl mb-4">🏠</div>
-              <h3 className="text-lg font-medium mb-2">In our apartment</h3>
-              <p className="text-white/60 text-sm font-light">An extremely chill setting in Stockholm. 24 builders, good vibes, plenty of energy drinks and pizza.</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-4">🗳️</div>
-              <h3 className="text-lg font-medium mb-2">Community voted</h3>
-              <p className="text-white/60 text-sm font-light">No judges. After demos, everyone votes. The community decides who wins.</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-20">
-            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-              <h3 className="text-sm font-medium text-white/40 uppercase tracking-wider mb-3">Schedule</h3>
-              <ul className="space-y-2 text-sm font-light">
-                <li className="flex justify-between"><span>Doors open</span><span className="text-white/50">09:00</span></li>
-                <li className="flex justify-between"><span>Theme reveal</span><span className="text-white/50">10:00</span></li>
-                <li className="flex justify-between"><span>Lunch</span><span className="text-white/50">13:00</span></li>
-                <li className="flex justify-between"><span>Demos &amp; voting</span><span className="text-white/50">20:00–22:00</span></li>
-                <li className="flex justify-between"><span>Foosball &amp; chill</span><span className="text-white/50">22:00+</span></li>
-              </ul>
-            </div>
-            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-              <h3 className="text-sm font-medium text-white/40 uppercase tracking-wider mb-3">Details</h3>
-              <ul className="space-y-2 text-sm font-light">
-                <li className="flex justify-between"><span>Location</span><span className="text-white/50">Stockholm</span></li>
-                <li className="flex justify-between"><span>Capacity</span><span className="text-white/50">24 builders</span></li>
-                <li className="flex justify-between"><span>Cost</span><span className="text-white/50">Free</span></li>
-                <li className="flex justify-between"><span>Food &amp; drinks</span><span className="text-white/50">Included</span></li>
-                <li className="flex justify-between"><span>Teams</span><span className="text-white/50">Groups of 3</span></li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Hosts */}
-          <div className="text-center">
-            <h3 className="text-2xl md:text-3xl font-light mb-10">
-              Your <span className="italic instrument">hosts</span>
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-10 max-w-3xl mx-auto">
-              <a href="https://www.linkedin.com/in/alexfooladi/" target="_blank" rel="noopener noreferrer" className="group text-center">
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors">
-                  <img src="/alex.jpeg" alt="Alex" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex items-center justify-center gap-1.5">
-                  <p className="text-sm font-medium">Alex</p>
-                  <svg className="w-2.5 h-2.5 text-white/20 group-hover:text-white/50 transition-colors" viewBox="0 0 20 18" fill="currentColor"><path d="M2.4 0C1.07 0 0 1.07 0 2.4c0 1.33 1.07 2.4 2.4 2.4 1.33 0 2.4-1.07 2.4-2.4C4.8 1.07 3.73 0 2.4 0zM.34 6.14h4.13V18H.34V6.14zM14.77 5.82c-2.28 0-3.63 1.25-4.13 2.1h-.06V6.14H6.72V18h4.13v-5.86c0-1.55.29-3.04 2.2-3.04 1.89 0 1.91 1.76 1.91 3.14V18H19v-6.42c0-3.19-.69-5.76-4.23-5.76z"/></svg>
-                </div>
-                <p className="text-[11px] text-white/40 mt-1">AI Engineer @ Arkyv</p>
-              </a>
-              <a href="https://www.linkedin.com/in/jonas-rosengren-2a4908211/" target="_blank" rel="noopener noreferrer" className="group text-center">
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors">
-                  <img src="/cohost.jpeg" alt="Jonas" className="w-full h-full object-cover" />
-                </div>
-                <div className="flex items-center justify-center gap-1.5">
-                  <p className="text-sm font-medium">Jonas</p>
-                  <svg className="w-2.5 h-2.5 text-white/20 group-hover:text-white/50 transition-colors" viewBox="0 0 20 18" fill="currentColor"><path d="M2.4 0C1.07 0 0 1.07 0 2.4c0 1.33 1.07 2.4 2.4 2.4 1.33 0 2.4-1.07 2.4-2.4C4.8 1.07 3.73 0 2.4 0zM.34 6.14h4.13V18H.34V6.14zM14.77 5.82c-2.28 0-3.63 1.25-4.13 2.1h-.06V6.14H6.72V18h4.13v-5.86c0-1.55.29-3.04 2.2-3.04 1.89 0 1.91 1.76 1.91 3.14V18H19v-6.42c0-3.19-.69-5.76-4.23-5.76z"/></svg>
-                </div>
-                <p className="text-[11px] text-white/40 mt-1">Member of Technical Staff @ Lovable</p>
-              </a>
-              <a href="https://spawned.ai/" target="_blank" rel="noopener noreferrer" className="group text-center">
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors flex items-center justify-center">
-                  <img src="/spawned-logo.png" alt="Spawned" className="w-20 md:w-24 ml-[16px]" />
-                </div>
-                <p className="text-sm font-medium">Spawned</p>
-                <p className="text-[11px] text-white/40 mt-1">The easiest way to deploy and manage your software.</p>
-              </a>
-              <a href="https://www.agreo.se/" target="_blank" rel="noopener noreferrer" className="group text-center">
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors flex items-center justify-center">
-                  <img src="/agreo-logo.svg" alt="Agreo" className="w-16 md:w-20" />
-                </div>
-                <p className="text-sm font-medium">Agreo</p>
-                <p className="text-[11px] text-white/40 mt-1">Swish for loans. Simple, secure peer-to-peer lending.</p>
-              </a>
-              <a href="https://senka.dev" target="_blank" rel="noopener noreferrer" className="group text-center">
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white/10 border border-white/10 mx-auto mb-3 overflow-hidden group-hover:border-white/30 transition-colors flex items-center justify-center">
-                  <svg width="48" height="48" viewBox="0 0 160 160" fill="none">
-                    <path d="M80 8 L144 8 C148 8, 152 12, 152 16 L152 72 C152 76, 148 80, 144 80 L80 80 C80 80, 112 80, 112 56 C112 32, 80 32, 80 8 Z" fill="#d4a574"/>
-                    <path d="M80 80 L16 80 C12 80, 8 84, 8 88 L8 144 C8 148, 12 152, 16 152 L80 152 C80 152, 48 152, 48 128 C48 104, 80 104, 80 80 Z" fill="#d4a574"/>
-                  </svg>
-                </div>
-                <p className="text-sm font-medium">Senka</p>
-                <p className="text-[11px] text-white/40 mt-1">AI Coding Workspace for product teams - in your browser.</p>
-              </a>
+              <div className="text-4xl mb-4">🏆</div>
+              <h3 className="text-lg font-medium mb-2">Expert judges</h3>
+              <p className="text-white/60 text-sm font-light">
+                After demos, a panel of judges scores each project on originality, design, and launch readiness.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Registration Form Section - Typeform Style */}
+      {/* Past Events */}
+      <section id="past-events" className="bg-stone-50 py-24 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-light text-stone-900 mb-16 text-center">
+            Past <span className="italic instrument">events</span>
+          </h2>
+
+          {/* Event Card */}
+          <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden max-w-2xl mx-auto">
+            <div className="bg-stone-900 text-white p-8">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-xs font-medium uppercase tracking-wider bg-white/10 px-3 py-1 rounded-full">
+                  Completed
+                </span>
+                <span className="text-xs text-white/50">March 7, 2026</span>
+              </div>
+              <h3 className="text-2xl md:text-3xl font-light mb-2">
+                <span className="italic instrument">Stockholm&apos;s</span>{" "}
+                <span className="font-light">First Hackathome</span>
+              </h3>
+              <p className="text-white/60 text-sm font-light">
+                24 builders, 10 hours, one apartment. Stockholm, Sweden.
+              </p>
+            </div>
+            <div className="p-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                <div>
+                  <p className="text-2xl font-light text-stone-900">24</p>
+                  <p className="text-xs text-stone-400 mt-1">Builders</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-light text-stone-900">10h</p>
+                  <p className="text-xs text-stone-400 mt-1">Duration</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-light text-stone-900">8</p>
+                  <p className="text-xs text-stone-400 mt-1">Teams</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-light text-stone-900">3</p>
+                  <p className="text-xs text-stone-400 mt-1">Sponsors</p>
+                </div>
+              </div>
+
+              {/* Hosts & Partners */}
+              <div className="border-t border-stone-100 pt-6">
+                <p className="text-xs text-stone-400 uppercase tracking-wider mb-4">Hosted by</p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <a href="https://www.linkedin.com/in/alexfooladi/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-stone-200 group-hover:border-stone-400 transition-colors">
+                      <img src="/alex.jpeg" alt="Alex" className="w-full h-full object-cover" />
+                    </div>
+                    <span className="text-sm text-stone-600 group-hover:text-stone-900 transition-colors">Alex</span>
+                  </a>
+                  <a href="https://www.linkedin.com/in/jonas-rosengren-2a4908211/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-stone-200 group-hover:border-stone-400 transition-colors">
+                      <img src="/cohost.jpeg" alt="Jonas" className="w-full h-full object-cover" />
+                    </div>
+                    <span className="text-sm text-stone-600 group-hover:text-stone-900 transition-colors">Jonas</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="border-t border-stone-100 pt-6 mt-6">
+                <p className="text-xs text-stone-400 uppercase tracking-wider mb-4">In partnership with</p>
+                <div className="flex items-center gap-6 flex-wrap">
+                  <a href="https://spawned.ai/" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
+                    <img src="/spawned-logo.png" alt="Spawned" className="h-6 w-auto brightness-0" />
+                  </a>
+                  <a href="https://www.agreo.se/" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity -ml-8 translate-y-1">
+                    <img src="/agreo-logo.svg" alt="Agreo" className="h-24 w-auto brightness-0" />
+                  </a>
+                  <a href="https://icebreaker.vc" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
+                    <img src="/icebreaker-logo.png" alt="Icebreaker" className="h-4 w-auto brightness-0" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="border-t border-stone-100 pt-6 mt-6">
+                <p className="text-xs text-stone-400 uppercase tracking-wider mb-2">Featured builders from</p>
+                <p className="text-sm text-stone-500 font-light">
+                  Lovable, Microsoft, Strawberry, Vesence and more
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Waitlist Section */}
       <section
-        id="register"
-        className="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-20"
+        id="waitlist"
+        className="min-h-screen bg-stone-900 flex items-center justify-center px-4 py-20"
       >
         <div className="w-full max-w-2xl">
           <AnimatePresence mode="wait">
@@ -290,16 +256,16 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center"
               >
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="w-20 h-20 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-light text-stone-900 mb-4">
-                  You&apos;re <span className="italic instrument">registered!</span>
+                <h2 className="text-4xl md:text-5xl font-light text-white mb-4">
+                  You&apos;re on the <span className="italic instrument">list!</span>
                 </h2>
-                <p className="text-stone-500 text-lg">
-                  We&apos;ll be in touch with more details soon.
+                <p className="text-white/50 text-lg">
+                  We&apos;ll reach out when details for the next event are ready.
                 </p>
               </motion.div>
             ) : (
@@ -310,13 +276,25 @@ export default function Home() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
+                {/* Header */}
+                {currentStep === 0 && (
+                  <div className="mb-12">
+                    <h2 className="text-3xl md:text-4xl font-light text-white mb-3">
+                      Next event <span className="italic instrument">coming soon</span>
+                    </h2>
+                    <p className="text-white/50 text-sm font-light">
+                      Join the waitlist to be the first to know when we announce the next Hackathome.
+                    </p>
+                  </div>
+                )}
+
                 {/* Progress */}
                 <div className="flex gap-2 mb-12">
                   {steps.map((_, i) => (
                     <div
                       key={i}
                       className={`h-1 flex-1 rounded-full transition-colors ${
-                        i <= currentStep ? "bg-stone-900" : "bg-stone-200"
+                        i <= currentStep ? "bg-white" : "bg-white/20"
                       }`}
                     />
                   ))}
@@ -324,10 +302,10 @@ export default function Home() {
 
                 {/* Question */}
                 <div className="mb-8">
-                  <span className="text-stone-400 text-sm mb-2 block">
-                    {currentStep + 1} → {steps[currentStep].required && "*"}
+                  <span className="text-white/40 text-sm mb-2 block">
+                    {currentStep + 1} →
                   </span>
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-stone-900 mb-8">
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-white mb-8">
                     {steps[currentStep].label}
                   </h2>
                   <input
@@ -339,7 +317,7 @@ export default function Home() {
                       setFormData({ ...formData, [steps[currentStep].key]: e.target.value })
                     }
                     onKeyDown={handleKeyDown}
-                    className="w-full text-2xl md:text-3xl font-light bg-transparent border-b-2 border-stone-200 focus:border-stone-900 outline-none pb-4 text-stone-900 placeholder:text-stone-300 transition-colors"
+                    className="w-full text-2xl md:text-3xl font-light bg-transparent border-b-2 border-white/20 focus:border-white outline-none pb-4 text-white placeholder:text-white/30 transition-colors"
                   />
                 </div>
 
@@ -350,25 +328,25 @@ export default function Home() {
                     disabled={!canProceed() || submitting}
                     className={`px-8 py-3 rounded-full text-sm font-normal transition-all duration-200 ${
                       canProceed() && !submitting
-                        ? "bg-stone-900 text-white hover:bg-stone-800 cursor-pointer"
-                        : "bg-stone-200 text-stone-400 cursor-not-allowed"
+                        ? "bg-white text-black hover:bg-white/90 cursor-pointer"
+                        : "bg-white/10 text-white/30 cursor-not-allowed"
                     }`}
                   >
-                    {submitting ? "Submitting..." : currentStep === steps.length - 1 ? "Submit" : "Continue"}
+                    {submitting ? "Submitting..." : currentStep === steps.length - 1 ? "Join Waitlist" : "Continue"}
                   </button>
-                  <span className="text-stone-400 text-sm">
-                    press <kbd className="px-2 py-1 bg-stone-100 rounded text-xs">Enter ↵</kbd>
+                  <span className="text-white/40 text-sm">
+                    press <kbd className="px-2 py-1 bg-white/10 rounded text-xs">Enter ↵</kbd>
                   </span>
                 </div>
 
                 {error && (
-                  <p className="mt-4 text-red-500 text-sm">{error}</p>
+                  <p className="mt-4 text-red-400 text-sm">{error}</p>
                 )}
 
                 {currentStep > 0 && (
                   <button
                     onClick={() => setCurrentStep(currentStep - 1)}
-                    className="mt-8 text-stone-400 text-sm hover:text-stone-600 transition-colors"
+                    className="mt-8 text-white/40 text-sm hover:text-white/60 transition-colors"
                   >
                     ← Go back
                   </button>
@@ -378,7 +356,6 @@ export default function Home() {
           </AnimatePresence>
         </div>
       </section>
-
     </div>
   );
 }
